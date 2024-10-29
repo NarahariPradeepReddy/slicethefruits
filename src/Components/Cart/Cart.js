@@ -23,6 +23,7 @@ function Cart() {
           ))}
         </ul>
       )}
+      
       <button onClick={handleCheckout} disabled={cart.length === 0}>
         Proceed to Checkout
       </button>
