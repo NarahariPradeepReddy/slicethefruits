@@ -1,0 +1,13 @@
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://source.unsplash.com/featured/?city'); 
+    background-size: cover;
+    background-position: center;
+    opacity: 0.9; /* Adjust opacity for a softer background */
+    z-index: 0;
+  }
+  
