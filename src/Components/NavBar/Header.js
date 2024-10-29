@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, AppBar, Toolbar, Button, Box, Avatar, IconButton, Menu, MenuItem, TextField } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]); // For storing filtered results
+  const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
 
-  // Mock data (you would replace this with actual product data or an API call)
   const productData = [
     { id: 1, name: 'Apple' },
     { id: 2, name: 'Banana' },
@@ -20,7 +17,6 @@ export default function Header() {
   ];
 
   useEffect(() => {
-    // Fetch user info from localStorage
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (storedUser) {
       setUser(storedUser);
@@ -41,19 +37,16 @@ export default function Header() {
     navigate('/login');
   };
 
-  // Function to handle searching
   const handleSearch = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-
-    // Filter the mock data (this can be replaced with an API call)
     if (query !== '') {
       const filteredResults = productData.filter((item) =>
         item.name.toLowerCase().includes(query.toLowerCase())
       );
       setSearchResults(filteredResults);
     } else {
-      setSearchResults([]); // Clear results if search is empty
+      setSearchResults([]);
     }
   };
 
@@ -100,14 +93,10 @@ export default function Header() {
               </Menu>
             </>
           ) : (
-            <>
-              <Button color="inherit" component={Link} to="/login">Login</Button>
-            </>
+            <Button color="inherit" component={Link} to="/login">Login</Button>
           )}
         </Box>
       </Toolbar>
-
-      {/* Render search results */}
       {searchResults.length > 0 && (
         <Box sx={{ p: 2, bgcolor: '#ffffff', color: 'black', borderRadius: '8px', mt: 1 }}>
           <Typography variant="h6">Search Results:</Typography>

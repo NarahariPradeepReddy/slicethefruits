@@ -10,7 +10,6 @@ import {
   Link,
 } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import Loginimg from "../Assets/login.jpg";
 import LgImg from '../Assets/lgBgimg.jpeg'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 

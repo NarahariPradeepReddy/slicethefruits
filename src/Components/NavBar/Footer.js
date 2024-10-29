@@ -1,18 +1,12 @@
 import React from 'react';
-import { Typography, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, Typography } from '@mui/material';
 
-export default function Footer() {
+const Footer = () => {
   return (
-    <Box sx={{ bgcolor: 'primary.main', p: 2, mt: 5 }}>
-      <Typography variant="body2" color="text.secondary" align="center">
-        {"Copyright © "}
-        <Link color="inherit" href="https://mui.com/">
-          SlicetheFruits
-        </Link>{" "}
-        {new Date().getFullYear()}
-        {"."}
-      </Typography>
+    <Box sx={{ bgcolor: 'green', color: '#fff', p: 2, textAlign: 'center', marginTop: 2, }}>
+      <Typography variant="body1">© 2024 SlicetheFruits. All rights reserved.</Typography>
     </Box>
   );
-}
+};
+
+export default Footer;

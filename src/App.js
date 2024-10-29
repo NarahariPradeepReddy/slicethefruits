@@ -6,17 +6,20 @@ import Homepage from './Components/Homepage/Homepage';
 import Cart from './Components/Cart/Cart';
 import Checkout from './Components/Cart/Checkout';
 import OrderTracking from './Components/Orders/OrderTracking';
+import Layout from './Components/Layout';
 
 function App() {
   return (
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/order-tracking" element={<OrderTracking />} />
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-tracking" element={<OrderTracking />} />
+        </Routes>
+      </Layout>
   );
 }
 
