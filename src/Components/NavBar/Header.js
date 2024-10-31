@@ -73,7 +73,7 @@ export default function Header() {
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button color="inherit" component={Link} to="/">Products</Button>
           <Button color="inherit" component={Link} to="/cart">Cart</Button>
-          <Button color="inherit" component={Link} to="/order-summary">Order Summary</Button>
+          <Button color="inherit" component={Link} to="/order-tracking">Orders</Button>
           {user ? (
             <>
               <IconButton

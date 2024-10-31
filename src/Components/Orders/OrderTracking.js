@@ -1,39 +1,169 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Paper,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Divider,
+  Button,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import MainImg from "../Assets/mainpage.jpg";
 
 function OrderTracking() {
-  const [orders, setOrders] = useState(JSON.parse(localStorage.getItem('orders')) || []);
+  const [orders, setOrders] = useState(
+    (JSON.parse(localStorage.getItem("orders")) || []).sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    )
+  );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const updateOrderStatus = () => {
-      const updatedOrders = orders.map((order) => {
-        if (order.status === 'Order Placed') return { ...order, status: 'Shipped' };
-        if (order.status === 'Shipped') return { ...order, status: 'Out for Delivery' };
-        if (order.status === 'Out for Delivery') return { ...order, status: 'Delivered' };
-        return order;
+      setOrders((prevOrders) => {
+        const updatedOrders = prevOrders.map((order) => {
+          let updatedStatus = order.status;
+          let updatedTracking = {
+            ...order,
+            readyForPacking: order.readyForPacking,
+            shipped: order.shipped,
+            outForDelivery: order.outForDelivery,
+            delivered: order.delivered,
+          };
+
+          if (updatedStatus === "Order Placed") {
+            updatedTracking.status = "Shipped";
+            updatedTracking.shipped = true; 
+          } else if (updatedStatus === "Shipped") {
+            updatedTracking.status = "Out for Delivery";
+            updatedTracking.outForDelivery = true; 
+          } else if (updatedStatus === "Out for Delivery") {
+            updatedTracking.status = "Delivered";
+            updatedTracking.delivered = true; 
+          }
+
+          return {
+            ...updatedTracking,
+            date: new Date().toLocaleString(),
+          };
+        });
+
+        const sortedUpdatedOrders = [...updatedOrders].sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+        localStorage.setItem("orders", JSON.stringify(sortedUpdatedOrders));
+        return sortedUpdatedOrders;
       });
-      setOrders(updatedOrders);
-      localStorage.setItem('orders', JSON.stringify(updatedOrders));
     };
 
-    const timer = setTimeout(updateOrderStatus, 5000); // Simulate status updates every 5 seconds
-    return () => clearTimeout(timer);
-  }, [orders]);
+    const timer = setInterval(updateOrderStatus, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleReorder = (order) => {
+    const newOrder = {
+      ...order,
+      id: Math.random().toString(36).substr(2, 9),
+      status: 'Order Placed',
+      date: new Date().toLocaleString(),
+      estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+      readyForPacking: false,
+      shipped: false,
+      outForDelivery: false,
+      delivered: false,
+      location: 'Warehouse',
+    };
+    const newOrdersList = [newOrder, ...orders];
+    setOrders(newOrdersList);
+    localStorage.setItem('orders', JSON.stringify(newOrdersList));
+  };
+
+  const handleResetOrders = () => {
+    setOrders([]);
+    localStorage.setItem("orders", JSON.stringify([]));
+  };
+
+  const handleViewOrderDetails = (order) => {
+    navigate("/order-summary", { state: { order } });
+  };
 
   return (
-    <div>
-      <h2>Order Tracking</h2>
-      {orders.length === 0 ? (
-        <p>No orders placed yet.</p>
-      ) : (
-        <ul>
-          {orders.map((order) => (
-            <li key={order.id}>
-              Order ID: {order.id} - Status: {order.status}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ padding: 3, marginTop: 5 }}>
+        <Typography variant="h4" gutterBottom align="center">
+          Orders
+        </Typography>
+        {orders.length === 0 ? (
+          <Typography variant="body1" align="center">
+            No orders placed yet.
+          </Typography>
+        ) : (
+          <List>
+            {orders.map((order) => (
+              <React.Fragment key={order.id}>
+                <ListItem
+                  alignItems="flex-start"
+                  onClick={() => handleViewOrderDetails(order)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      variant="square"
+                      src={order.image || MainImg}
+                      alt="Order Item"
+                      sx={{ width: 80, height: 80, marginRight: 2 }}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={`Order ID: ${order.id}`}
+                    secondary={
+                      <>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          color="text.primary"
+                        >
+                          Status: {order.status}
+                        </Typography>
+                        <br />
+                        <Typography variant="body2" color="text.secondary">
+                          Ordered on: {order.date || "Date not available"}
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="primary"
+                    onClick={(e) => {
+                      e.stopPropagation(); 
+                      handleReorder(order);
+                    }}
+                  >
+                    Reorder
+                  </Button>
+                </ListItem>
+                <Divider />
+              </React.Fragment>
+            ))}
+          </List>
+        )}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleResetOrders}
+          sx={{ marginTop: 2 }}
+        >
+          Reset Orders
+        </Button>
+      </Paper>
+    </Container>
   );
 }
 

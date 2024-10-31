@@ -1,72 +1,99 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
   TextField,
   Typography,
+  Snackbar,
   Paper,
   Grid,
   Container,
   Radio,
   RadioGroup,
   FormControlLabel,
-} from '@mui/material';
+} from "@mui/material";
 
 function Checkout() {
-  const [address, setAddress] = useState('');
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('UPI'); // Default to UPI
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvc, setCardCvc] = useState('');
-  const [saveCard, setSaveCard] = useState(false); // Option to save card details
+  const [address, setAddress] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState(""); // Error state for phone number
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [upiOption, setUpiOption] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
+  const [saveCard, setSaveCard] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
 
+  const validatePhoneNumber = () => {
+    const phonePattern = /^[0-9]{10}$/;
+    if (!phonePattern.test(phone)) {
+      setPhoneError("Please enter a valid 10-digit phone number.");
+      return false;
+    }
+    setPhoneError("");
+    return true;
+  };
+
   const handlePlaceOrder = () => {
-    // Handle UPI redirection
-    if (paymentMethod !== 'Credit/Debit Card') {
-      const selectedUPI = paymentMethod; // Get the selected UPI method
-      redirectToUPIApp(selectedUPI);
-      return; // Exit early to avoid saving the order
+    if (!name || !phone || !address) {
+      setSnackbarMessage("Please fill in all required fields.");
+      setOpenSnackbar(true);
+      return;
     }
 
-    // Save order details in localStorage
+    if (!validatePhoneNumber()) {
+      setSnackbarMessage("Please enter a valid 10-digit phone number.");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (!paymentMethod) {
+      setSnackbarMessage("Please select a payment method.");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (paymentMethod === "UPI" && !upiOption) {
+      setSnackbarMessage("Please select a UPI method.");
+      setOpenSnackbar(true);
+      return;
+    }
+    if (
+      paymentMethod === "Credit/Debit Card" &&
+      (!cardNumber || !cardExpiry || !cardCvc)
+    ) {
+      setSnackbarMessage("Please fill in all card details.");
+      setOpenSnackbar(true);
+      return;
+    }
+
     const order = {
       id: Math.random().toString(36).substr(2, 9),
       address,
       name,
       phone,
-      paymentMethod,
-      status: 'Order Placed',
-      cardNumber: saveCard ? cardNumber : undefined, // Save card number if user chooses
+      paymentMethod: upiOption || paymentMethod,
+      status: "Order Placed",
+      cardNumber: saveCard ? cardNumber : undefined,
+      date: new Date().toLocaleString(),
     };
 
-    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
     orders.push(order);
-    localStorage.setItem('orders', JSON.stringify(orders));
-
-    localStorage.setItem('cart', JSON.stringify([])); // Empty the cart
-    navigate('/order-tracking');
+    localStorage.setItem("orders", JSON.stringify(orders));
+    localStorage.setItem("cart", JSON.stringify([]));
+    setSnackbarMessage("Order placed successfully!");
+    setOpenSnackbar(true);
+    navigate("/order-tracking");
   };
 
-  const redirectToUPIApp = (upiMethod) => {
-    let upiUrl = '';
-    switch (upiMethod) {
-      case 'Google Pay':
-        upiUrl = 'upi://pay?pa=example@okaxis&pn=Example+Name&mc=1234&tid=1234567890&am=1.00&cu=INR&url=https://example.com';
-        break;
-      case 'PhonePe':
-        upiUrl = 'upi://pay?pa=example@ppbl&pn=Example+Name&mc=1234&tid=1234567890&am=1.00&cu=INR&url=https://example.com';
-        break;
-      case 'Paytm':
-        upiUrl = 'upi://pay?pa=example@paytm&pn=Example+Name&mc=1234&tid=1234567890&am=1.00&cu=INR&url=https://example.com';
-        break;
-      default:
-        return;
-    }
-    window.location.href = upiUrl; // Redirect to UPI app
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -94,6 +121,9 @@ function Checkout() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
+              error={!!phoneError}
+              helperText={phoneError}
+              onBlur={validatePhoneNumber} // Validate when the field loses focus
             />
           </Grid>
           <Grid item xs={12}>
@@ -114,38 +144,57 @@ function Checkout() {
               value={paymentMethod}
               onChange={(e) => {
                 setPaymentMethod(e.target.value);
-                // Clear card details if switching to UPI
-                if (e.target.value === 'Credit/Debit Card') {
-                  setCardNumber('');
-                  setCardExpiry('');
-                  setCardCvc('');
+                if (e.target.value !== "Credit/Debit Card") {
+                  setCardNumber("");
+                  setCardExpiry("");
+                  setCardCvc("");
+                }
+                if (e.target.value !== "UPI") {
+                  setUpiOption("");
                 }
               }}
             >
               <FormControlLabel value="UPI" control={<Radio />} label="UPI" />
-              <Box ml={4}>
-                <FormControlLabel
-                  value="Google Pay"
-                  control={<Radio />}
-                  label="Google Pay"
-                />
-                <FormControlLabel
-                  value="PhonePe"
-                  control={<Radio />}
-                  label="PhonePe"
-                />
-                <FormControlLabel
-                  value="Paytm"
-                  control={<Radio />}
-                  label="Paytm"
-                />
-              </Box>
+              {paymentMethod === "UPI" && (
+                <Box ml={4}>
+                  <FormControlLabel
+                    value="Google Pay"
+                    control={
+                      <Radio
+                        checked={upiOption === "Google Pay"}
+                        onChange={(e) => setUpiOption(e.target.value)}
+                      />
+                    }
+                    label="Google Pay"
+                  />
+                  <FormControlLabel
+                    value="PhonePe"
+                    control={
+                      <Radio
+                        checked={upiOption === "PhonePe"}
+                        onChange={(e) => setUpiOption(e.target.value)}
+                      />
+                    }
+                    label="PhonePe"
+                  />
+                  <FormControlLabel
+                    value="Paytm"
+                    control={
+                      <Radio
+                        checked={upiOption === "Paytm"}
+                        onChange={(e) => setUpiOption(e.target.value)}
+                      />
+                    }
+                    label="Paytm"
+                  />
+                </Box>
+              )}
               <FormControlLabel
                 value="Credit/Debit Card"
                 control={<Radio />}
                 label="Credit/Debit Card"
               />
-              {paymentMethod === 'Credit/Debit Card' && (
+              {paymentMethod === "Credit/Debit Card" && (
                 <Box ml={4}>
                   <TextField
                     label="Card Number"
@@ -172,7 +221,12 @@ function Checkout() {
                     required
                   />
                   <FormControlLabel
-                    control={<Radio checked={saveCard} onChange={() => setSaveCard(!saveCard)} />}
+                    control={
+                      <Radio
+                        checked={saveCard}
+                        onChange={() => setSaveCard(!saveCard)}
+                      />
+                    }
                     label="Save card for future use"
                   />
                 </Box>
@@ -196,6 +250,13 @@ function Checkout() {
           </Grid>
         </Grid>
       </Paper>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      />
     </Container>
   );
 }

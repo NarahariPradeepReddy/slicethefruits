@@ -1,80 +1,80 @@
 import React from 'react';
-import { Card, CardContent, Typography, Grid2, Box, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, Typography, Box, Button } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function OrderSummary({ cartItems }) {
+const OrderSummary = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { order } = location.state || {};
 
-  const handleBackToProducts = () => {
-    navigate('/products');
+  const handleBackToOrders = () => {
+    navigate('/order-tracking');
   };
 
-  const calculateTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
-  };
+  if (!order) {
+    return <Typography variant="h6">No order details available.</Typography>;
+  }
 
   return (
-    <Card sx={{ maxWidth: 800, m: 2, bgcolor: '#4eff6dcc', marginLeft: '250px' }}>
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div" align="center" sx={{ fontWeight: 600 }}>
-          Your Order Summary
-        </Typography>
-        {cartItems && cartItems.length > 0 ? (
-          <>
-            <Grid2 container spacing={2} alignItems="center">
-              <Grid2 item xs={6}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }} align="left">
-                  Products
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        minHeight: '100vh',
+        bgcolor: '#f0f0f0',
+        padding: 2,
+        overflow: 'auto',
+      }}
+    >
+      <Card sx={{ width: { xs: '100%', sm: '80%', md: '60%', lg: '40%' }, m: 2 }}>
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div" align="center" sx={{ fontWeight: 600 }}>
+            Order Details
+          </Typography>
+          <Typography variant="h6">Order ID: {order.id}</Typography>
+          <Typography variant="body1">Status: {order.status}</Typography>
+          <Typography variant="body1">Ordered on: {order.date}</Typography>
+          
+
+          {/* Order Tracking Details */}
+          <Typography variant="h6" sx={{ marginTop: 3 }}>
+            Tracking Details:
+          </Typography>
+          <Box sx={{ marginY: 2 }}>
+            <Typography variant="body1"><strong>Ordered:</strong> {order.date}</Typography>
+            <Typography variant="body1"><strong>Ready for Packing:</strong> {order.readyForPacking ? 'Yes' : 'No'}</Typography>
+            <Typography variant="body1"><strong>Shipped:</strong> {order.shipped ? 'Yes' : 'No'}</Typography>
+            <Typography variant="body1"><strong>Out for Delivery:</strong> {order.outForDelivery ? 'Yes' : 'No'}</Typography>
+
+            {!order.delivered ? (
+              <>
+                <Typography variant="body1"><strong>Estimated Delivery Date:</strong> {order.estimatedDelivery || 'N/A'}</Typography>
+                <Typography variant="body1"><strong>Current Location:</strong> {order.location || 'Location not available'}</Typography>
+              </>
+            ) : (
+              <>
+                <Typography variant="body1" sx={{ color: 'gray' }}>
+                  <strong>Estimated Delivery Date:</strong> Delivery complete.
                 </Typography>
-              </Grid2>
-              <Grid2 item xs={3}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }} align="left">
-                  Quantity
+                <Typography variant="body1" sx={{ color: 'gray' }}>
+                  <strong>Current Location:</strong> Location not available.
                 </Typography>
-              </Grid2>
-              <Grid2 item xs={3}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }} align="left">
-                  Price
-                </Typography>
-              </Grid2>
-            </Grid2>
-            {cartItems.map((item, index) => (
-              <Grid2 key={index} container spacing={2} alignItems="center">
-                <Grid2 item xs={6}>
-                  <Typography variant="body1" align="left">
-                    {item.product.name}
-                  </Typography>
-                </Grid2>
-                <Grid2 item xs={3}>
-                  <Typography variant="body1">{item.quantity}</Typography>
-                </Grid2>
-                <Grid2 item xs={3}>
-                  <Typography variant="body1">₹{item.product.price * item.quantity}</Typography>
-                </Grid2>
-              </Grid2>
-            ))}
-            <Grid2 container spacing={2} alignItems="center" sx={{ mt: 2 }}>
-              <Grid2 item xs={7}>
-                <Typography variant="h6" align="right">
-                  Total:
-                </Typography>
-              </Grid2>
-              <Grid2 item xs={3}>
-                <Typography variant="h6" align="right">
-                  ₹{calculateTotalPrice()}
-                </Typography>
-              </Grid2>
-            </Grid2>
-          </>
-        ) : (
-          <Typography variant="body1" align='center'>Your cart is empty.</Typography>
-        )}
-        <Box sx={{ marginTop: 5, display: 'flex', justifyContent: 'space-evenly' }}>
-          <Button variant="contained" color="primary" onClick={handleBackToProducts}>
-            Continue Shopping
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
+              </>
+            )}
+            
+            <Typography variant="body1"><strong>Delivered:</strong> {order.delivered ? 'Yes' : 'No'}</Typography>
+          </Box>
+
+          <Box sx={{ marginTop: 5, display: 'flex', justifyContent: 'center' }}>
+            <Button variant="contained" color="primary" onClick={handleBackToOrders}>
+              Back to Orders
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
   );
-}
+};
+
+export default OrderSummary;

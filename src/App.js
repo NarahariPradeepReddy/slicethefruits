@@ -7,6 +7,7 @@ import Cart from './Components/Cart/Cart';
 import Checkout from './Components/Cart/Checkout';
 import OrderTracking from './Components/Orders/OrderTracking';
 import Layout from './Components/Layout';
+import OrderSummary from './Components/Orders/OrderSummary';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-tracking" element={<OrderTracking />} />
+          <Route path="/order-summary" element={<OrderSummary />} />
         </Routes>
       </Layout>
   );
