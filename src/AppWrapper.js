@@ -1,12 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import AppRoutes from './Routes';
-import Layout from './Components/Layout'; 
+import App from './App'; 
 
 function AppWrapper() {
   return (
-    <Router>
-        <AppRoutes />
+    <Router basename="/slicethefruits">
+        <App />
     </Router>
   );
 }
