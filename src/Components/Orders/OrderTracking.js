@@ -8,6 +8,7 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
+  Box,
   Divider,
   Button,
 } from "@mui/material";
@@ -88,6 +89,10 @@ function OrderTracking() {
     localStorage.setItem("orders", JSON.stringify([]));
   };
 
+  const handleContinueShopping = () => {
+    navigate('/')
+  }
+
   const handleViewOrderDetails = (order) => {
     navigate("/order-summary", { state: { order } });
   };
@@ -104,6 +109,7 @@ function OrderTracking() {
           </Typography>
         ) : (
           <List>
+            <Typography variant="h5" align="center" color="#ff0606cf">Congrats! Your Order Placed successfully</Typography>
             {orders.map((order) => (
               <React.Fragment key={order.id}>
                 <ListItem
@@ -154,6 +160,7 @@ function OrderTracking() {
             ))}
           </List>
         )}
+        <Box justifyContent="space-between" display="flex">
         <Button
           variant="contained"
           color="secondary"
@@ -162,6 +169,16 @@ function OrderTracking() {
         >
           Reset Orders
         </Button>
+        <Button
+              onClick={handleContinueShopping}
+              variant="outlined"
+              color="secondary"
+              size="small"
+              sx={{ marginTop: 2 }}
+            >
+              Continue Shopping
+            </Button>
+            </Box>
       </Paper>
     </Container>
   );

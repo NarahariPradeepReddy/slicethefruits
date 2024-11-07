@@ -45,13 +45,6 @@ function Homepage() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
 
-  // const addToCart = (product) => {
-  //   const newCart = [...cart, { ...product, quantity: 1 }];
-  //   setCart(newCart);
-  //   localStorage.setItem("cart", JSON.stringify(newCart));
-  //   setSnackbarMessage(`${product.name} added to cart!`);
-  //   setOpenSnackbar(true);
-  // };
   
   const addToCart = (product) => {
     const newCart = [...cart, { ...product, quantity: 1, date: new Date().toLocaleString() }];
