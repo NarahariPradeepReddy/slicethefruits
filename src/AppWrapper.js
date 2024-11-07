@@ -4,7 +4,7 @@ import App from './App';
 
 function AppWrapper() {
   return (
-    <Router basename="/slicethefruits">
+    <Router>
         <App />
     </Router>
   );
