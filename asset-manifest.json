@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/slicethefruits/static/css/main.d221dc40.css",
-    "main.js": "/slicethefruits/static/js/main.ced6712c.js",
+    "main.js": "/slicethefruits/static/js/main.53aef99c.js",
     "static/media/Pineapple.jpg": "/slicethefruits/static/media/Pineapple.bc8b7b9354940fce0323.jpg",
     "static/media/Orange.jpg": "/slicethefruits/static/media/Orange.3a68dd060c2fe4c99261.jpg",
     "static/media/BlackGrapes.jpg": "/slicethefruits/static/media/BlackGrapes.f95150e62493e13027ab.jpg",
@@ -9,10 +9,10 @@
     "static/media/mainpage.jpg": "/slicethefruits/static/media/mainpage.e272c7a85a90ebce6092.jpg",
     "index.html": "/slicethefruits/index.html",
     "main.d221dc40.css.map": "/slicethefruits/static/css/main.d221dc40.css.map",
-    "main.ced6712c.js.map": "/slicethefruits/static/js/main.ced6712c.js.map"
+    "main.53aef99c.js.map": "/slicethefruits/static/js/main.53aef99c.js.map"
   },
   "entrypoints": [
     "static/css/main.d221dc40.css",
-    "static/js/main.ced6712c.js"
+    "static/js/main.53aef99c.js"
   ]
 }
