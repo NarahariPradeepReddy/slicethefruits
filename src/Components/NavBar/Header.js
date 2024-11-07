@@ -53,7 +53,7 @@ export default function Header() {
   return (
     <AppBar position="static" sx={{ bgcolor: 'green', borderRadius: '8px' }}>
       <Toolbar>
-        <Button variant="h6" component={Link} to="/" sx={{ flexGrow: 1, color: "#ffff" }}>
+        <Button variant="h6" component={Link} to="/slicethefruits" sx={{ flexGrow: 1, color: "#ffff" }}>
           SlicetheFruits
         </Button>
         <TextField
@@ -71,7 +71,7 @@ export default function Header() {
           }}
         />
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button color="inherit" component={Link} to="/">Products</Button>
+          <Button color="inherit" component={Link} to="/slicethefruits">Products</Button>
           <Button color="inherit" component={Link} to="/cart">Cart</Button>
           <Button color="inherit" component={Link} to="/order-tracking">Orders</Button>
           {user ? (
