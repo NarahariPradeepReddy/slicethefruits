@@ -13,7 +13,7 @@ function Cart() {
   };
 
   const handleContinueShopping = () => {
-    navigate('/');
+    navigate('/slicethefruits');
   };
 
   const incrementQuantity = (productId) => {
