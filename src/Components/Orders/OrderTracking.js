@@ -90,7 +90,7 @@ function OrderTracking() {
   };
 
   const handleContinueShopping = () => {
-    navigate('/')
+    navigate('/slicethefruits')
   }
 
   const handleViewOrderDetails = (order) => {
