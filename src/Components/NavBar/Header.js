@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, AppBar, Toolbar, Button, Box, Avatar, IconButton, Menu, MenuItem, TextField } from '@mui/material';
+import { Typography, AppBar, Toolbar, Button, Box, Avatar, IconButton, Menu, MenuItem, TextField, Paper, List, ListItem, ListItemText } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import Logo from '../Assets/logo.jpg';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -52,42 +53,57 @@ export default function Header() {
 
   return (
     <AppBar position="static" sx={{ bgcolor: 'green', borderRadius: '8px' }}>
-      <Toolbar>
-        <Button variant="h6" component={Link} to="/slicethefruits" sx={{ flexGrow: 1, color: "#ffff" }}>
-          SlicetheFruits
-        </Button>
-        <TextField
-          label="Search for products and more"
-          variant="outlined"
-          value={searchQuery}
-          onChange={handleSearch}
-          InputLabelProps={{
-            shrink: searchQuery.length > 0,
-          }}
-          sx={{
-            bgcolor: "#ffff",
-            width: { xs: "50vh", sm: "60vh", md: "80vh" },
-            borderRadius: "8px",
-          }}
-        />
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* Logo and Brand Name */}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <img src={Logo} alt="logo" style={{ height: '40px', marginRight: '10px' }} />
+          <Typography variant="h6" component={Link} to="/slicethefruits" sx={{ color: "#ffffff", textDecoration: 'none' }}>
+            SlicetheFruits
+          </Typography>
+        </Box>
+
+        {/* Search Bar */}
+        <Box sx={{ position: 'relative' }}>
+          <TextField
+            label="Search for products and more"
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearch}
+            InputLabelProps={{
+              shrink: searchQuery.length > 0,
+            }}
+            sx={{
+              bgcolor: "#ffffff",
+              width: { xs: "50vh", sm: "60vh", md: "80vh" },
+              borderRadius: "8px",
+            }}
+          />
+          {searchResults.length > 0 && (
+            <Paper sx={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10, mt: 1 }}>
+              <List>
+                {searchResults.map((item) => (
+                  <ListItem key={item.id} button>
+                    <ListItemText primary={item.name} />
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          )}
+        </Box>
+
+        {/* Navigation Links */}
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button color="inherit" component={Link} to="/slicethefruits">Products</Button>
           <Button color="inherit" component={Link} to="/cart">Cart</Button>
           <Button color="inherit" component={Link} to="/order-tracking">Orders</Button>
+
+          {/* User Profile Dropdown */}
           {user ? (
             <>
-              <IconButton
-                color="inherit"
-                onClick={handleMenuOpen}
-                aria-label="User profile menu"
-              >
+              <IconButton color="inherit" onClick={handleMenuOpen} aria-label="User profile menu">
                 <Avatar alt={user.email} src="/static/images/avatar/1.jpg" />
               </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
+              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                 <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
                 <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
               </Menu>
@@ -97,16 +113,6 @@ export default function Header() {
           )}
         </Box>
       </Toolbar>
-      {searchResults.length > 0 && (
-        <Box sx={{ p: 2, bgcolor: '#ffffff', color: 'black', borderRadius: '8px', mt: 1 }}>
-          <Typography variant="h6">Search Results:</Typography>
-          <ul>
-            {searchResults.map((item) => (
-              <li key={item.id}>{item.name}</li>
-            ))}
-          </ul>
-        </Box>
-      )}
     </AppBar>
   );
 }
